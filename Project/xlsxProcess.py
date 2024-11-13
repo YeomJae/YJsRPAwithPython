@@ -1,5 +1,6 @@
 import pandas as pd
 import util
+from openpyxl import load_workbook
 
 log_bool= True
 
@@ -20,10 +21,10 @@ def toExcelErp(directory: SystemError, filename):
     account_num = filename.split('_')[1]
 
     file_paths = {
-        "bank": f"{directory}\\workF\\{filename}.xls",
-        "saer": f"{directory}\\workF\\거래처원장 {filename2}.xls"
+        "bank": f"{directory}\\{filename}",
+        "saer": f"{directory}\\거래처원장 {filename2}.xls"
     }
-    output_file_path = f"{directory}\\resultF\\{account_num}.xlsx"
+    output_file_path = f"{directory}\\{account_num}.xlsx"
     output_file_path = output_file_path.replace("workF","resultF")
     output_file_path = util.save_excel_with_seq(output_file_path)
 
@@ -70,9 +71,14 @@ def toExcelErp(directory: SystemError, filename):
         df_bank.to_excel(writer, sheet_name=SHEET_NAMES["bank"], index=False)
         df_saer.to_excel(writer, sheet_name=SHEET_NAMES["saer"], index=False)
         df_combined.to_excel(writer, sheet_name=SHEET_NAMES["combined"], index=False)
-        df_pivot_out.to_excel(writer, sheet_name=SHEET_NAMES["pivot_out"])
-        df_pivot_in.to_excel(writer, sheet_name=SHEET_NAMES["pivot_in"])
+        df_pivot_out.to_excel(writer, sheet_name=SHEET_NAMES["pivot_out"], index=False)
+        df_pivot_in.to_excel(writer, sheet_name=SHEET_NAMES["pivot_in"], index=False)
         df_pivot_combined.to_excel(writer, sheet_name=SHEET_NAMES["pivot_combined"], index=False)
+
+    # 특정 시트를 활성화 상태로 설정
+    workbook = load_workbook(output_file_path)
+    workbook.active = workbook.sheetnames.index(SHEET_NAMES["pivot_combined"])  # 특정 시트 활성화
+    workbook.save(output_file_path)
 
 def preprocess_bank_data(df_bank):
     """은행 데이터를 정리합니다."""
