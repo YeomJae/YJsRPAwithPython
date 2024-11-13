@@ -9,7 +9,8 @@ SHEET_NAMES = {
     "saer": "회계자료",
     "combined": "시트합치기",
     "pivot_out": "피봇출금",
-    "pivot_in": "피봇입금"
+    "pivot_in": "피봇입금",
+    "pivot_combined": "최종오류자료"
 }
 
 def toExcelErp(directory: SystemError, filename):
@@ -17,11 +18,12 @@ def toExcelErp(directory: SystemError, filename):
     # 계좌 번호 추출 및 파일 경로 설정
     filename2 = filename.split('_')[1][-6:]
     account_num = filename.split('_')[1]
+
     file_paths = {
-        "bank": f"{directory}/{filename}",
-        "saer": f"{directory}/거래처원장 {filename2}.xls"
+        "bank": f"{directory}\\workF\\{filename}.xls",
+        "saer": f"{directory}\\workF\\거래처원장 {filename2}.xls"
     }
-    output_file_path = f"{directory}/{account_num}.xlsx"
+    output_file_path = f"{directory}\\resultF\\{account_num}.xlsx"
     output_file_path = output_file_path.replace("workF","resultF")
     output_file_path = util.save_excel_with_seq(output_file_path)
 
@@ -55,6 +57,22 @@ def toExcelErp(directory: SystemError, filename):
         df_combined.to_excel(writer, sheet_name=SHEET_NAMES["combined"], index=False)
         df_pivot_out.to_excel(writer, sheet_name=SHEET_NAMES["pivot_out"])
         df_pivot_in.to_excel(writer, sheet_name=SHEET_NAMES["pivot_in"])
+
+    # 특정 시트 읽기    
+    df_pivot_out = pd.read_excel(output_file_path, sheet_name=SHEET_NAMES["pivot_out"])
+    df_pivot_in = pd.read_excel(output_file_path, sheet_name=SHEET_NAMES["pivot_in"])
+
+    # 피봇 테이블 데이터 병합
+    df_pivot_combined = combine_df_pivot_data(df_pivot_out, df_pivot_in)
+
+    # 최종 저장
+    with pd.ExcelWriter(output_file_path) as writer:
+        df_bank.to_excel(writer, sheet_name=SHEET_NAMES["bank"], index=False)
+        df_saer.to_excel(writer, sheet_name=SHEET_NAMES["saer"], index=False)
+        df_combined.to_excel(writer, sheet_name=SHEET_NAMES["combined"], index=False)
+        df_pivot_out.to_excel(writer, sheet_name=SHEET_NAMES["pivot_out"])
+        df_pivot_in.to_excel(writer, sheet_name=SHEET_NAMES["pivot_in"])
+        df_pivot_combined.to_excel(writer, sheet_name=SHEET_NAMES["pivot_combined"], index=False)
 
 def preprocess_bank_data(df_bank):
     """은행 데이터를 정리합니다."""
@@ -95,6 +113,22 @@ def create_pivot_tables(df_combined, bank_label, saer_label):
     df_pivot_in["상태"] = df_pivot_in["입금차액"].apply(lambda x: "정상" if x == 0 else "오류")
 
     return df_pivot_out, df_pivot_in
+
+def combine_df_pivot_data(df_pivot_out, df_pivot_in):
+    df_pivot_out = df_pivot_out[['거래일시','은행자료','회계자료','출금차액','상태']]
+    df_pivot_out.columns = ['거래일시','은행자료','회계자료','차액','상태']  # 컬럼명 변경
+    df_pivot_out.insert(0, '구분', SHEET_NAMES["pivot_out"])  # 신규 구분 컬럼을 첫 번째 위치에 추가
+
+    df_pivot_in = df_pivot_in[['거래일시','은행자료','회계자료','입금차액','상태']]
+    df_pivot_in.columns = ['거래일시','은행자료','회계자료','차액','상태']  # 컬럼명 변경
+    df_pivot_in.insert(0, '구분', SHEET_NAMES["pivot_in"])  # 신규 구분 컬럼을 첫 번째 위치에 추가
+
+    df_comb = pd.concat([df_pivot_out, df_pivot_in], ignore_index=True)
+
+    """합친 자료 오류자료만 정리"""
+    df_comb = df_comb[~df_comb['상태'].str.contains('정상', na=False)]
+
+    return df_comb
 
 def get_worker(directory: SystemError, search_item):
     workers_file_path = f"{directory}\\workers.xlsx"
