@@ -53,8 +53,12 @@ IACF PYTHON STUDY GROUP
    3. DAY05 폴더에 for문 예제 10개 공부하기
 
 **여섯번째 수업 ( 2024.11.12 )**
- - 참여자 : 8명 중 #명 참여
+ - 참여자 : 8명 중 8명 참여
  - 참여자 실습시간 : https://github.com/sahuni/pythonRPAwithIACF/tree/main/DAY06#readme 참고하여 실습
  - 부운영자 강의 : git + visual code
  - 참여자 레파지토리
    1. https://github.com/YeomJae
+   2. https://github.com/geonnam
+   3. https://github.com/SA-RA-PARK
+   4. https://github.com/wonilhye
+   5. https://github.com/asdasdasdadq2a
