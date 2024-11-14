@@ -23,4 +23,4 @@ for file_name in file_list:
         worker = xlp.get_worker(directory, search_item)
         print(worker) #  {"Name" : "홍길동", "Email" : "hong@abcd.co.kr"}
         xlp.toExcelErp(directory_workF, file_name)
-        wep.sendMail(directory_resultF,worker) #DAY07 구현단계
+        wep.set_attach_file() #DAY07 구현단계
