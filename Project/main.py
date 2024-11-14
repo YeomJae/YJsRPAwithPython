@@ -4,6 +4,7 @@ import xlsxProcess as xlp
 
 directory = ut.exedir('py')
 directory_workF = ut.exedir('py')+"\\workF"
+directory_resultF = directory_workF.replace("workF","resultF")
 
 """
 filename = "20241016_89900100056880_154004"
@@ -22,3 +23,4 @@ for file_name in file_list:
         worker = xlp.get_worker(directory, search_item)
         print(worker) #  {"Name" : "홍길동", "Email" : "hong@abcd.co.kr"}
         xlp.toExcelErp(directory_workF, file_name)
+        wep.sendMail(directory_resultF,worker) #DAY07 구현단계
