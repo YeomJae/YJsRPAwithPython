@@ -3,7 +3,7 @@ import pandas as pd
 import tkinter as tk
 from tkinter import filedialog
 from openpyxl import load_workbook
-from PyQt5.QtWidgets import QTextEdit, QProgressBar, QFileDialog
+# from PyQt5.QtWidgets import QTextEdit, QProgressBar, QFileDialog
 
 log_bool= True
 
@@ -54,9 +54,9 @@ def acctonum(account_number) :
     account_number = result.group().replace('-', '') if result else None
     return str(account_number)
 
-def select_folder(widget):
-    folder_path = QFileDialog.getExistingDirectory(widget, "폴더 선택")
-    return folder_path
+#def select_folder(widget):
+#    folder_path = QFileDialog.getExistingDirectory(widget, "폴더 선택")
+#    return folder_path
 
 def create_folder(folder_path):
     if not os.path.exists(folder_path):
