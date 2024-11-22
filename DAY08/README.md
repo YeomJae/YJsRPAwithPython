@@ -32,6 +32,8 @@ https://api.telegram.org/bot8107204196:AAFxZTC5cRBR7QLRAdlifzrV9fz0tj7pvxE/getUp
 
 ![image](https://github.com/user-attachments/assets/5ab3f74c-dcd3-4fb9-9fdb-85b59c7808d2)
 
+---------------------------------------
+
 [chat ID 얻기]
 
 ![image](https://github.com/user-attachments/assets/feef0d56-f329-44fd-ac88-83cd38a8cb21)
