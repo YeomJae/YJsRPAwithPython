@@ -38,6 +38,7 @@ https://api.telegram.org/bot8107204196:AAFxZTC5cRBR7QLRAdlifzrV9fz0tj7pvxE/getUp
 [아래는 실행코드]
 
 ```python
+# pip install python-telegram-bot --upgrade
 import asyncio
 from telegram import Bot
 
