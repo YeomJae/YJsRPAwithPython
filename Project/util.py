@@ -7,26 +7,32 @@ from openpyxl import load_workbook
 
 log_bool= True
 
-def exedir(chk) :
-    if os.path.splitext(sys.executable)[1] == ".exe" and "python" not in sys.executable.lower():
-        execute_dir = os.path.dirname(sys.executable)
-    elif chk == "dir" : # 현재 디렉토리 위치 얻기
-        execute_dir = os.getcwd()
-    elif chk == "py"  : # 현재 파이썬 파일 디렉토리 위치 얻기
-        execute_dir = os.path.dirname(os.path.abspath(__file__))
+def exedir(mode="script"):
+    """
+    mode:
+    - "cwd": 현재 작업 디렉토리
+    - "exe": 실행 파일 디렉토리
+    - "script": 스크립트 파일 디렉토리
+    """
+    if mode == "exe" and os.path.splitext(sys.executable)[1] == ".exe" and "python" not in sys.executable.lower():
+        return os.path.dirname(sys.executable)
+    elif mode == "cwd":
+        return os.getcwd()
+    elif mode == "script":
+        return os.path.dirname(os.path.abspath(__file__))
     else:
-        execute_dir = "디렉토리 오류"
-    
-    return execute_dir
+        raise ValueError("Invalid mode. Use 'cwd', 'exe', or 'script'.")
+
 
 today = datetime.datetime.now().strftime("%Y%m%d")  # 'YYYYMMDD' 형식
-log_filename = os.path.expandvars(f"{exedir("py")}\\log_{today}.txt")
+log_filename = os.path.expandvars(f"{exedir("script")}\\log_{today}.log")
 
 # 로그 설정 (파일 저장)
 logging.basicConfig(
     filename=log_filename,              # 로그 파일명
     level=logging.INFO,                # 로그 레벨
     format="%(asctime)s - %(message)s", # 로그 포맷
+    encoding='utf-8',       # UTF-8 인코딩 설정
     filemode="a"                        #a = append, w = 덮어쓰기
 )
 
@@ -41,8 +47,8 @@ def debug_print(*args, **kwargs):
 
     # 로그 메시지 파일에 기록
     logging.info(message)
-    # display=True일 때만 콘솔 출력
-    if kwargs.get('LOG', False) :
+    
+    if kwargs.get('LOG', True) :
         print(message)
 
 def acctonum(account_number) :
@@ -93,7 +99,7 @@ def select_folder_console(display=False):
     return folder_path
 
 def get_login_info(display=False):
-    config_file_path = f"{exedir("py")}\\config.txt"
+    config_file_path = f"{exedir("script")}\\config.env"
     debug_print(f"msg:[config_file_path ==> {config_file_path}",display=log_bool)
     if os.path.exists(config_file_path):
         # 파일 읽기
@@ -115,21 +121,9 @@ def get_login_info(display=False):
         logininfo={"ID" : None,"PW" : None}
     return logininfo
 
-def load_config(file_path=f"{exedir("py")}\\config.txt"):
+def load_config(file_path=f"{exedir("script")}\\config.env"):
     config = configparser.ConfigParser()
     config.optionxform = str  # 키 이름의 대소문자 구분 유지
-    # config.txt 파일이 없으면 생성
-    if not os.path.exists(file_path):
-        debug_print(f"{file_path} does not exist. Creating the file with default values.",log_bool)
-        # 기본 섹션과 값 추가
-        config["login"] = {
-            "ID": "your_username",
-            "PW": "your_password",
-            "EMAIL": "your_email"
-        }
-        # 파일 작성
-        with open(file_path, "w", encoding="utf-8") as configfile:
-            config.write(configfile)
 
     # UTF-8 인코딩으로 파일 읽기
     config.read(file_path, encoding="utf-8")
