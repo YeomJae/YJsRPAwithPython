@@ -59,7 +59,7 @@ def search_mail_and_download_attachment(search_string):
                     print(f"From: {from_}")
                     print(f"Subject: {subject}")
 
-                    # 제목이 검색어와 일치하는지 확인
+                    # 제목에 특정 검색어가 들어가 있는지
                     if search_string in subject:
                         print(f"Found matching email: {subject}")
                         download_attachment(msg, DOWNLOADF)  # 첨부파일 다운로드 함수 호출
