@@ -3,7 +3,7 @@
 4o 버전 ==> https://github.com/marketplace/models/azure-openai/gpt-4o-mini/playground
 
 1. 파일첨부를 해줘. 파일첨부는 엑셀 파일만 해줘.
-2. 받는 사람 형식을 formataddr()로 이름과 메일주소로 만들어줘
+2. 받는 사람 형식을 formataddr()로 이름과 메일주소로 만들어줘.
 
 <pre>
 <code>
